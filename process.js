@@ -13,30 +13,23 @@ var mc = require('./morse-code.json');
 // Now, iterate over each entty, and writeSync the C++ code we want
 var strComment = "////////////////////////////////////////////////////////////////////////////////"
 
-fs.open('./mappings.cpp', 'w+', (err, fd) => {
+var writeOut = function(fd, str) {
     //console.log(strComment);
-    fs.writeSync(fd, strComment);
+    fs.writeSync(fd, str);
     fs.writeSync(fd, "\n");
+}
+
+fs.open('./mappings.cpp', 'w+', (err, fd) => {
+    writeOut(fd, strComment);
     for (var key in mc) {
-        // console.log(key, mc[key]);
         var str = "mapMorse2Char[\"" + mc[key] + "\"] = \"" + key.toUpperCase() + "\";";
-        //console.log(str);
-        fs.writeSync(fd, str);
-        fs.writeSync(fd, "\n");
+        writeOut(fd, str);
     }
 
-    fs.writeSync(fd, strComment);
-    fs.writeSync(fd, "\n");
-    //console.log(strComment);
+    writeOut(fd, strComment);
     // Let's make the reverse mapping'
     for (var key in mc) {
-        // console.log(key, mc[key]);
         var str = "mapChar2Morse[\"" + key.toUpperCase() + "\"] = \"" + mc[key] + "\";";
-        //console.log(str);
-        fs.writeSync(fd, str);
-        fs.writeSync(fd, "\n");
-  }
-    fs.writeSync(fd, strComment);
-    fs.writeSync(fd, "\n");
-    //console.log(strComment);
+        writeOut(fd, str);
+    }
 });
